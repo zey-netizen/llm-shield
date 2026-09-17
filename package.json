@@ -1,12 +1,16 @@
 ﻿{
-  "name": "llm-shield",
+  "name": "@coder12-z/llm-shield",
   "version": "0.1.0",
   "description": "Zero-dependency error recovery layer for LLM SDKs.",
   "main": "src/index.js",
   "type": "module",
   "scripts": { "test": "node test.js" },
   "keywords": ["llm","openai","anthropic","retry","error-handling","json-repair","tool-calling","streaming","sdk","recovery"],
-  "author": "YOUR_NAME",
+  "author": "Zey Smith <zedpro1212@gmail.com>",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zey-netizen/llm-shield.git"
+},
   "engines": { "node": ">=18" }
 }
