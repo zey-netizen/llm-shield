@@ -1,0 +1,12 @@
+﻿{
+  "name": "llm-shield",
+  "version": "0.1.0",
+  "description": "Zero-dependency error recovery layer for LLM SDKs.",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": { "test": "node test.js" },
+  "keywords": ["llm","openai","anthropic","retry","error-handling","json-repair","tool-calling","streaming","sdk","recovery"],
+  "author": "YOUR_NAME",
+  "license": "MIT",
+  "engines": { "node": ">=18" }
+}

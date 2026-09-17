@@ -1,0 +1,22 @@
+﻿import { shield, isTransient400, isTruncatedStream, isMalformedToolArgs, sanitizeToolArgs } from "./src/index.js";
+let passed = 0, failed = 0;
+const t = (name, cond) => { cond ? (console.log("OK", name), passed++) : (console.log("FAIL", name), failed++); };
+t("detects transient 400", isTransient400({ status: 400, message: "could not parse JSON body" }));
+t("rejects normal 400", !isTransient400({ status: 400, message: "invalid api key" }));
+t("detects truncated stream", isTruncatedStream({ message: "Invalid JSON: EOF while parsing an object" }));
+t("detects malformed tool args", isMalformedToolArgs({ message: "failed to parse tool call arguments JSON" }));
+t("strips code fences", JSON.stringify(sanitizeToolArgs('```json\n{"a":1}\n```')) === '{"a":1}');
+t("fixes trailing comma", JSON.stringify(sanitizeToolArgs('{"a":1,}')) === '{"a":1}');
+t("fixes single quotes", JSON.stringify(sanitizeToolArgs("{'a':'b'}")) === '{"a":"b"}');
+let calls = 0;
+const flaky = shield(async () => { calls++; if (calls < 3) { const e = new Error("could not parse JSON body"); e.status = 400; throw e; } return { ok: true, calls }; }, { baseDelayMs: 10 });
+const res = await flaky();
+t("retries transient 400 then succeeds", res.ok && calls === 3);
+const withTool = shield(async () => ({ toolCalls: [{ function: { name: "f", arguments: '```json\n{"x":1,}\n```' } }] }));
+const r2 = await withTool();
+t("sanitizes tool args in result", typeof r2.toolCalls[0].function.arguments === "object");
+const fatal = shield(async () => { throw new Error("invalid api key"); });
+let threw = false; try { await fatal(); } catch { threw = true; }
+t("non-retryable error throws immediately", threw);
+console.log("\n" + passed + " passed, " + failed + " failed");
+process.exit(failed ? 1 : 0);
