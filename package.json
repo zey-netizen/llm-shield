@@ -1,6 +1,6 @@
 {
   "name": "@coder12-z/llm-shield",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Zero-dependency error recovery layer for LLM SDKs.",
   "main": "src/index.js",
   "type": "module",
