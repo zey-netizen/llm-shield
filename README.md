@@ -39,6 +39,6 @@ import { wrapOpenAI } from "@coder12-z/llm-shield";
 const client = wrapOpenAI(new OpenAI());
 // Now every call is shielded automatically
 const res = await client.chat.completions.create({...});
-
+```
 ## License
 MIT
