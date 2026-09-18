@@ -30,5 +30,15 @@ These are transient SDK/network artifacts. They kill your pipeline.
       })
     );
 
+## Convenience wrapper (OpenAI)
+
+```javascript
+import OpenAI from "openai";
+import { wrapOpenAI } from "@coder12-z/llm-shield";
+
+const client = wrapOpenAI(new OpenAI());
+// Now every call is shielded automatically
+const res = await client.chat.completions.create({...});
+
 ## License
 MIT

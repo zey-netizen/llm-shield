@@ -78,3 +78,23 @@ export function shield(fn, options = {}) {
 }
 
 export default shield;
+
+// Convenience wrapper for OpenAI-style clients
+export function wrapOpenAI(client) {
+  if (!client?.chat?.completions?.create) {
+    throw new Error("wrapOpenAI: expected an OpenAI client instance");
+  }
+  return {
+    ...client,
+    chat: {
+      ...client.chat,
+      completions: {
+        ...client.chat.completions,
+        create: shield(
+          client.chat.completions.create.bind(client.chat.completions),
+          { maxRetries: 3 }
+        ),
+      },
+    },
+  };
+}
