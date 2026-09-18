@@ -1,4 +1,8 @@
-﻿# llm-shield
+﻿[![npm downloads](https://img.shields.io/npm/dm/@coder12-z/llm-shield.svg)](https://www.npmjs.com/package/@coder12-z/llm-shield)
+[![npm version](https://img.shields.io/npm/v/@coder12-z/llm-shield.svg)](https://www.npmjs.com/package/@coder12-z/llm-shield)
+[![license](https://img.shields.io/npm/l/@coder12-z/llm-shield.svg)](https://www.npmjs.com/package/@coder12-z/llm-shield)
+
+# llm-shield
 
 Zero-dependency error recovery layer for LLM SDKs.
 
