@@ -1,0 +1,73 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>llm-shield — Fix "Invalid JSON: EOF while parsing" & "could not parse JSON body" in Node.js</title>
+<meta name="description" content="Zero-dependency error recovery layer for OpenAI, Anthropic, Gemini SDKs. Auto-retry transient 400s, truncated streaming, malformed tool call arguments. npm install @coder12-z/llm-shield">
+<style>
+body{font-family:system-ui,-apple-system,sans-serif;max-width:720px;margin:60px auto;padding:0 20px;line-height:1.6;color:#222}
+code,pre{background:#f4f4f4;padding:2px 6px;border-radius:4px;font-size:14px}
+pre{padding:16px;overflow-x:auto}
+h1{font-size:28px;margin-bottom:8px}
+.tag{color:#666;font-size:16px;margin-bottom:32px}
+h2{margin-top:32px;font-size:20px}
+.err{color:#c00;font-family:monospace;font-size:13px;display:block;margin:4px 0}
+</style>
+</head>
+<body>
+
+<h1>llm-shield</h1>
+<p class="tag">Zero-dependency error recovery layer for LLM SDKs.</p>
+
+<h2>Your Node.js app crashes with:</h2>
+<span class="err">BadRequestError: 400 could not parse JSON body</span>
+<span class="err">SyntaxError: Invalid JSON: EOF while parsing an object</span>
+<span class="err">Invalid JSON in tool call arguments</span>
+<span class="err">Failed to parse function arguments</span>
+
+<p>These are <strong>not your fault</strong>. They're transient SDK / network / proxy artifacts. But they kill your pipeline.</p>
+
+<h2>Install</h2>
+<pre>npm install @coder12-z/llm-shield</pre>
+
+<h2>Use</h2>
+<pre>import { shield } from "@coder12-z/llm-shield";
+import OpenAI from "openai";
+
+const client = new OpenAI();
+
+const safeCall = shield(async (prompt) =&gt;
+  client.chat.completions.create({
+    model: "gpt-4o-mini",
+    messages: [{ role: "user", content: prompt }],
+    response_format: { type: "json_object" },
+  }),
+  { maxRetries: 3 }
+);
+
+const res = await safeCall("Return JSON with {name: string}");</pre>
+
+<h2>What it handles</h2>
+<ul>
+<li>Transient 400 errors (<code>could not parse JSON body</code>) → retry with backoff + jitter</li>
+<li>Truncated streaming (<code>EOF while parsing</code>) → retry</li>
+<li>Malformed tool call arguments → sanitize inline</li>
+</ul>
+
+<h2>What it does NOT do</h2>
+<ul>
+<li>It does not repair arbitrary JSON strings — use <a href="https://www.npmjs.com/package/jsonrepair">jsonrepair</a> for that.</li>
+<li>It does not call LLMs for you. It wraps your existing SDK calls.</li>
+<li>No API key. No network. No dependencies.</li>
+</ul>
+
+<h2>Links</h2>
+<p>
+<a href="https://www.npmjs.com/package/@coder12-z/llm-shield">NPM</a> ·
+<a href="https://github.com/zey-netizen/llm-shield">GitHub</a> ·
+MIT License
+</p>
+
+</body>
+</html>
